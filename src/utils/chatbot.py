@@ -22,6 +22,7 @@ def chat_bot(st, Link):
         response = f"Model response : {prompt}"
 
         with st.chat_message("assistant"):
-            st.markdown(response)
+            if prompt is not None:
+                st.markdown(response)
 
         st.session_state.messages.append({"role": "assistant", "content": response})

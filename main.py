@@ -1,5 +1,6 @@
 import streamlit as st
 from src.utils import chatbot
+from src.utils.scrapper import WebScraper
 import validators
 
 # Initialize session state for chat visibility
@@ -23,3 +24,16 @@ if st.sidebar.button("Scrape"):
     else:
         st.session_state.show_chat = True  # Proceed if a link is provided
         chatbot.chat_bot(st, Link)
+
+        scraper = WebScraper()  # Initialize the WebScraper class
+        html_content = scraper.scrape_website(Link)
+
+        if html_content:
+            body_content = scraper.extract_body_content(html_content)
+            cleaned_content = scraper.clean_body_content(body_content)
+
+            # Display the cleaned content in the chat message
+            with st.chat_message("assistant"):
+                st.markdown(cleaned_content)
+        else:
+            st.sidebar.error("Failed to scrape the website. Please try again!")
