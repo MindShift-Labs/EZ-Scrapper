@@ -1,28 +1,19 @@
+def chat_bot(st):
+    if "messages" not in st.session_state:
+        st.session_state.messages = []
 
+    for message in st.session_state.messages:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
 
-def chat_bot(st, Link):
-    # show chat box when the scrape button is clicked
-    if st.session_state.show_chat:
-        with st.chat_message("assistant"):
-            st.write(f"Searching results for the following link :{Link}")
+    if prompt := st.chat_input("What is up?"):
 
-        if "messages" not in st.session_state:
-            st.session_state.messages = []
+        st.session_state.messages.append({"role": "user", "content": prompt})
 
-        for message in st.session_state.messages:
-            with st.chat_message(message["role"]):
-                st.markdown(message["content"])
+        with st.chat_message("user"):
+            st.markdown(prompt)
 
-        if prompt := st.chat_input("Enter the URL or Prompt"):
-            with st.chat_message("user"):
-                st.markdown(prompt)
-
-            st.session_state.messages.append({"role": "user", "content": prompt})
-
-        response = f"Model response : {prompt}"
+        st.session_state.messages.append({"role": "assistant", "content": st.session_state.cleaned_content})
 
         with st.chat_message("assistant"):
-            if prompt is not None:
-                st.markdown(response)
-
-        st.session_state.messages.append({"role": "assistant", "content": response})
+            st.markdown(st.session_state.cleaned_content)
